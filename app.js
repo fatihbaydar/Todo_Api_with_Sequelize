@@ -13,9 +13,9 @@ app.use(express.json()); // json datayı kabul eder ve nesneye(obje) dönüştü
 
 require("express-async-errors"); // asenkron hatalaarı yakalayıp errorHandler'a gönderir.
 
-app.all("/", (req, res) => {
-  res.send("Welcome to Todo API");
-});
+// app.all("/", (req, res) => { // bunu yoruma almazsak her istekte bu döner
+//   res.send("Welcome to Todo API");
+// });
 
 /* ------------------------------------------------------- */
 
@@ -81,14 +81,63 @@ const Todo = sequelize.define("todos", {
 // Modeli veri tabanına uygula
 // sequelize.sync(); // tablo oluşturur. Model veri tabanına uygulanmamışsa çalıştırılır.
 // sequelize.sync({force:true}) // tabloyu siler ve yeniden oluşturur.
-sequelize.sync({alter:true}) // tabloyu yedekler sonra siler sonra yeniden oluşturur sonra yedeklemeyi de siler.
+// sequelize.sync({alter:true}) // tabloyu yedekler sonra siler sonra yeniden oluşturur sonra yedeklemeyi de siler.
 //! sync() methodu 1 kere uygulanır (modelde değişiklik var ise tekrar uygulanır.)
+
+/* ------------------------------------------------------- */
+
+//? Database'e Bağlanma
+sequelize
+  .authenticate()
+  .then(() => console.log("Database'e Bağlanıldı"))
+  .catch(() => console.log("Database'e Bağlanılamadı"));
+
+/* ------------------------------------------------------- */
+
+//? ROUTER
+const router = express.Router();
+
+//LIST TODO:
+router.get("/", async (req,res) => {
+    // const data = await Todo.findAll()
+    const data = await Todo.findAll({
+        attributes:["title", "description", "priority"], // alan seçimi
+        where: {priority:1} //filtreleme
+    })
+    // const data = await Todo.findAndCountAll()
+    res.status(200).send({
+        error:false,
+        result:data
+    })
+})
+
+//? CRUD
+//? 1) CREATE TODO
+
+router.post("/", async (req, res) => {
+//   const receivedData = req.body;
+//   console.log(receivedData);
+
+//   const data = await Todo.create({
+//     title: receivedData.title,
+//     description: receivedData.description,
+//     priority: receivedData.priority,
+//     isDone: receivedData.priority,
+//   });
+  const data = await Todo.create(req.body)
+  res.status(201).send({
+    error: false,
+    result: data
+  });
+});
+
+app.use(router);
 
 /* ------------------------------------------------------- */
 
 const errorHandler = (err, req, res, next) => {
   const errorStatusCode = res.errorStatusCode ?? 500;
-  console.log("errorHandler worked");
+  console.log("errorHandler çalıştı");
   res.status(errorStatusCode).send({
     error: true,
     message: err.message,
