@@ -37,16 +37,17 @@ const sequelize = new Sequelize(
 // Model isimleri PascalCase
 
 const Todo = sequelize.define("todos", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false, // default true --boş değerlere izin verilsin mi?
-    unique: true, //default false
-    comment: "description",
-    primaryKey: true, //default false
-    autoIncrement: true, //default false
-    field: "custom_name",
-    defaultValue: 0, // default: null
-  },
+  //!  sequelize'da id tanımlamaya gerek yoktur. Otomatik tanımlanır.
+  //   id: {
+  //     type: DataTypes.INTEGER,
+  //     allowNull: false, // default true --boş değerlere izin verilsin mi?
+  //     unique: true, //default false
+  //     comment: "description",
+  //     primaryKey: true, //default false
+  //     autoIncrement: true, //default false
+  //     field: "custom_name",
+  //     defaultValue: 0, // default: null
+  //   },
 
   title: {
     type: DataTypes.STRING,
@@ -56,7 +57,7 @@ const Todo = sequelize.define("todos", {
   // description: {
   //     type:DataTypes.TEXT
   // }
-  description: DataTypes.TEXT, // kısayolu: Sadece data tipi oluşturulacaksa obje açmaya gerek yok
+  description: DataTypes.TEXT, //! kısayolu: Sadece data tipi oluşturulacaksa obje açmaya gerek yok
 
   priority: {
     // -1: Low, 0: Normal, 1: Yüksek
@@ -73,8 +74,15 @@ const Todo = sequelize.define("todos", {
 
   // createdAt: {},
   // updatedAt: {},
-  // createdAt ve updatedAt tanımlamaya gerek yoktur. Sequelize otomatik yönetir.
+  //! createdAt ve updatedAt tanımlamaya gerek yoktur. Sequelize otomatik yönetir.
 });
+
+//? Senkronizasyon
+// Modeli veri tabanına uygula
+// sequelize.sync(); // tablo oluşturur. Model veri tabanına uygulanmamışsa çalıştırılır.
+// sequelize.sync({force:true}) // tabloyu siler ve yeniden oluşturur.
+sequelize.sync({alter:true}) // tabloyu yedekler sonra siler sonra yeniden oluşturur sonra yedeklemeyi de siler.
+//! sync() methodu 1 kere uygulanır (modelde değişiklik var ise tekrar uygulanır.)
 
 /* ------------------------------------------------------- */
 
