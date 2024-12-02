@@ -97,37 +97,47 @@ sequelize
 //? ROUTER
 const router = express.Router();
 
-//LIST TODO:
-router.get("/", async (req,res) => {
-    // const data = await Todo.findAll()
-    const data = await Todo.findAll({
-        attributes:["title", "description", "priority"], // alan seçimi
-        where: {priority:1} //filtreleme
-    })
-    // const data = await Todo.findAndCountAll()
-    res.status(200).send({
-        error:false,
-        result:data
-    })
-})
+//? LIST TODO:
+router.get("/", async (req, res) => {
+  // const data = await Todo.findAll()
+  // const data = await Todo.findAll({
+  // attributes:["title", "description", "priority"], // alan seçimi
+  // where: {priority:1} //filtreleme
+  // })
+  const data = await Todo.findAndCountAll();
+  res.status(200).send({
+    error: false,
+    result: data,
+  });
+});
 
 //? CRUD
 //? 1) CREATE TODO
 
 router.post("/", async (req, res) => {
-//   const receivedData = req.body;
-//   console.log(receivedData);
+  //   const receivedData = req.body;
+  //   console.log(receivedData);
 
-//   const data = await Todo.create({
-//     title: receivedData.title,
-//     description: receivedData.description,
-//     priority: receivedData.priority,
-//     isDone: receivedData.priority,
-//   });
-  const data = await Todo.create(req.body)
+  //   const data = await Todo.create({
+  //     title: receivedData.title,
+  //     description: receivedData.description,
+  //     priority: receivedData.priority,
+  //     isDone: receivedData.priority,
+  //   });
+  const data = await Todo.create(req.body);
   res.status(201).send({
     error: false,
-    result: data
+    result: data,
+  });
+});
+
+//? 1) READ TODO
+router.get("/:id(\\d+)", async (req, res) => {
+  // const data = await Todo.findOne({where: {id:req.params.id}})
+  const data = await Todo.findByPk(req.params.id);
+  res.status(200).send({
+    error: false,
+    result: data,
   });
 });
 
