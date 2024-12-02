@@ -131,13 +131,34 @@ router.post("/", async (req, res) => {
   });
 });
 
-//? 1) READ TODO
+//? 2) READ TODO
 router.get("/:id(\\d+)", async (req, res) => {
   // const data = await Todo.findOne({where: {id:req.params.id}})
   const data = await Todo.findByPk(req.params.id);
   res.status(200).send({
     error: false,
     result: data,
+  });
+});
+
+//? 3) PUT TODO
+router.put("/:id", async (req, res) => {
+  // const data = await Todo.update({newData}, {where})
+  const data = await Todo.update(req.body, { where: { id: req.params.id } }); // req.params kendisi obje olduğuu için {} açmaya gerek yok
+  //upsert: kayıt varsa güncelle yoksa ekle
+
+  // res.status(202).send({
+  //   error:false,
+  //   result:data, // kaç adet güncellendiği bilgisi döner.
+  //   message:"güncellendi",
+  //   new: await Todo.findByPk(req.params.id)
+  // })
+
+  res.status(202).send({
+    error: false,
+    result: await Todo.findByPk(req.params.id),
+    message: "güncellendi",
+    count: data,
   });
 });
 
