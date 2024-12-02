@@ -162,6 +162,31 @@ router.put("/:id", async (req, res) => {
   });
 });
 
+//? 4) DELETE TODO
+router.delete("/:id", async (req, res) => {
+  const data = await Todo.destroy({ where: { id: req.params.id } });
+
+  // res.status(204).send({ // 204 hatası içerik vermez
+  //   error: false,
+  //   message: "silindi",
+  //   count: data,
+  // })
+
+  if (data > 0) {
+    res.sendStatus(204);
+  } else {
+    // kaydı tekrar silmeye çalıştığında çalışacak.
+    // res.status(404).send({
+    //   error: true,
+    //   message: "silindi"
+    // })
+    res.errorStatusCode = 404;
+    throw new Error(
+      "errorHandler: silinecek veri bulunamadı, belki önceden silinmiştir"
+    );
+  }
+});
+
 app.use(router);
 
 /* ------------------------------------------------------- */
