@@ -13,12 +13,9 @@ app.use(express.json()); // json datayı kabul eder ve nesneye(obje) dönüştü
 
 require("express-async-errors"); // asenkron hatalaarı yakalayıp errorHandler'a gönderir.
 
-
 /* ------------------------------------------------------- */
 
-
-
-app.use(require("./app/routes/todo.router"));
+app.use("/ksa", require("./app/routes/todo.router"));
 
 /* ------------------------------------------------------- */
 
